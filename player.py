@@ -3,49 +3,57 @@ import random
 class Player:
     
     def __init__(self, name, country, type):
+        self.main_character = False
+        
         self.name = name
         self.country = country
         self.age = 18
         self.type = type
         
-        match (type):
-            case "Power":
-                self.serve = random.randint(58, 60)
-                self.forehand = 60
-                self.backhand = 55
-                self.slice = 50
-                self.volley = 50
-    
-                self.clutch = 50
-                self.endurance = 55
-            case "Touch":
-                self.serve = 55
-                self.forehand = 55
-                self.backhand = 50
-                self.slice = 60
-                self.volley = 60
-    
-                self.clutch = 50
-                self.endurance = 50
-            case "Mind":
-                self.serve = 55
-                self.forehand = 55
-                self.backhand = 50
-                self.slice = 50
-                self.volley = 50
-    
-                self.clutch = 60
-                self.endurance = 60
+        self.point_history = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        
+        self.serve = 0
+        self.backhand = 0
+        self.forehand = 0
+        self.slice = 0
+        self.volley = 0
+
+        self.clutch = 0
+        self.endurance = 0
+
+        self.serve = 0
+        self.forehand = 0
+        self.backhand = 0
+        self.slice = 0
+        self.volley = 0
+
+        self.clutch = 0
+        self.endurance = 0
+
+        self.serve = 0
+        self.forehand = 0
+        self.backhand = 0
+        self.slice = 0
+        self.volley = 0
+
+        self.clutch = 0
+        self.endurance = 0
         
         self.rating = 0
-        self.updateRating()
+        self.update_rating()
         
         self.points = 0
         self.energy = 100
-        self.rank = 0  # Will be assigned based on points
         
-    def updateRating(self):
+        self.trophies = []
+        
+    def update_rating(self):
         self.rating = (self.serve + self.forehand + self.backhand + self.slice + self.volley + self.clutch + self.endurance) / 7
+        
+        self.rating = self.rating.__round__(1)
         
     def print_stats(self):
         print("PLAYER INFO")
@@ -69,3 +77,6 @@ class Player:
         print(f"Clutch: {self.clutch}")
         print(f"Endurance: {self.endurance}")
         print("="*30)
+
+    def update_points(self):
+        self.points = sum(self.point_history)

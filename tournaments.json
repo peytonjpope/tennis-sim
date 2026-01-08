@@ -1,306 +1,344 @@
 [
     {
         "name": "Australian Open",
+        "country": "AUS",
         "pts": 2000,
         "participants": 128,
         "slam": true,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 3
     },
     {
         "name": "Rotterdam Open",
+        "country": "NED",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 6
     },
     {
         "name": "Dubai Championships",
+        "country": "UAE",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 8
     },
     {
         "name": "Indian Wells Masters",
+        "country": "USA",
         "pts": 1000,
-        "participants": 96,
+        "participants": 64,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 10
     },
     {
         "name": "Miami Masters",
+        "country": "USA",
         "pts": 1000,
-        "participants": 96,
+        "participants": 64,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 12
     },
     {
         "name": "Monte Carlo Masters",
+        "country": "MON",
         "pts": 1000,
-        "participants": 56,
+        "participants": 64,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 15
     },
     {
         "name": "Barcelona Open",
+        "country": "ESP",
         "pts": 500,
-        "participants": 48,
+        "participants": 32,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 16
     },
     {
         "name": "Madrid Masters",
+        "country": "ESP",
         "pts": 1000,
-        "participants": 96,
+        "participants": 64,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 18
     },
     {
         "name": "Rome Masters",
+        "country": "ITA",
         "pts": 1000,
-        "participants": 96,
+        "participants": 64,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 20
     },
     {
         "name": "French Open",
+        "country": "FRA",
         "pts": 2000,
         "participants": 128,
         "slam": true,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 22
     },
     {
         "name": "Queen's Club Championships",
+        "country": "GBR",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "grass_outdoor",
+        "surface": "Grass",
         "week": 25
     },
     {
         "name": "Halle Open",
+        "country": "GER",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "grass_outdoor",
+        "surface": "Grass",
         "week": 25
     },
     {
         "name": "Wimbledon",
+        "country": "GBR",
         "pts": 2000,
         "participants": 128,
         "slam": true,
-        "surface": "grass_outdoor",
+        "surface": "Grass",
         "week": 27
     },
     {
         "name": "Hamburg Open",
+        "country": "GER",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 30
     },
     {
         "name": "Canadian Masters",
+        "country": "CAN",
         "pts": 1000,
-        "participants": 56,
+        "participants": 64,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 32
     },
     {
         "name": "Cincinnati Masters",
+        "country": "USA",
         "pts": 1000,
-        "participants": 56,
+        "participants": 64,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 33
     },
     {
         "name": "US Open",
+        "country": "USA",
         "pts": 2000,
         "participants": 128,
         "slam": true,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 35
     },
     {
         "name": "Tokyo Open",
+        "country": "JPN",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 39
     },
     {
         "name": "Shanghai Masters",
+        "country": "CHN",
         "pts": 1000,
-        "participants": 96,
+        "participants": 64,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 40
     },
     {
         "name": "Vienna Open",
+        "country": "AUT",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 43
     },
     {
         "name": "Paris Masters",
+        "country": "FRA",
         "pts": 1000,
-        "participants": 48,
+        "participants": 64,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 44
     },
     {
         "name": "ATP Finals",
+        "country": "ITA",
         "pts": 1500,
         "participants": 8,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 46
     },
     {
         "name": "Adelaide International",
+        "country": "AUS",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 1
     },
     {
         "name": "Auckland Open",
+        "country": "NZL",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 1
     },
     {
         "name": "Montpellier Open",
+        "country": "FRA",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 5
     },
     {
         "name": "Delray Beach Open",
+        "country": "USA",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 7
     },
     {
         "name": "Acapulco Open",
+        "country": "MEX",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 9
     },
     {
         "name": "Estoril Open",
+        "country": "POR",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 17
     },
     {
         "name": "Munich Open",
+        "country": "GER",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 17
     },
     {
         "name": "Geneva Open",
+        "country": "SUI",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "clay_outdoor",
+        "surface": "Clay",
         "week": 21
     },
     {
         "name": "Eastbourne International",
+        "country": "GBR",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "grass_outdoor",
+        "surface": "Grass",
         "week": 26
     },
     {
         "name": "Newport Hall of Fame Open",
+        "country": "USA",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "grass_outdoor",
+        "surface": "Grass",
         "week": 28
     },
     {
         "name": "Washington Open",
+        "country": "USA",
         "pts": 500,
-        "participants": 48,
+        "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 31
     },
     {
         "name": "Winston-Salem Open",
+        "country": "USA",
         "pts": 250,
-        "participants": 48,
+        "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 34
     },
     {
         "name": "Metz Open",
+        "country": "FRA",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 37
     },
     {
         "name": "Beijing Open",
+        "country": "CHN",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_outdoor",
+        "surface": "Hard",
         "week": 38
     },
     {
         "name": "Stockholm Open",
+        "country": "SWE",
         "pts": 250,
         "participants": 32,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 42
     },
     {
         "name": "Basel Open",
+        "country": "SUI",
         "pts": 500,
         "participants": 32,
         "slam": false,
-        "surface": "hard_indoor",
+        "surface": "Hard",
         "week": 43
     }
 ]
