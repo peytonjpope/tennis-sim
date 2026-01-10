@@ -4,6 +4,7 @@ import math
 import json
 from tournament import Tournament
 import names
+from datetime import date
 
 # CONSTANTS
 COUNTRIES = ["USA", "ESP", "SRB", "FRA", "AUS",
@@ -16,7 +17,7 @@ ENERGY_PER_SET = 2
 
 TYPES = ['Grass', 'Clay', 'Hard']
 
-TRAIN_OPTIONS = ['SERVE', 'FOREHAND', 'BACKHAND', 'SLICE', 'VOLLEY', 'CLUTCH', 'ENDURANCE', 'REST']
+TRAIN_OPTIONS = ['Rest', 'Serve', 'Forehand', 'Backhand', 'Slice', 'Volley', 'Clutch', 'Endurance']
 
 # Tournament Weeks
 AO_WEEK = 3
@@ -76,7 +77,9 @@ POINTS_PER_ROUND_250 = [
 
 def generate_random_player(age = None):
 
-    name = names.get_full_name(gender='male') 
+    full_name = names.get_full_name(gender='male')
+    first, last = full_name.split()
+    name = f"{first[0]}. {last}"
     country = random.choice(COUNTRIES)
     type = random.choice(["Grass", "Clay", "Hard", "Hard"])
     
@@ -96,14 +99,15 @@ def generate_random_player(age = None):
         case "Elite":  # Top 10-25 players (rating ~90-96)
             match (type):
                 case "Grass":
-                    player.serve = random.randint(92, 99)
-                    player.forehand = random.randint(80, 92)
-                    player.backhand = random.randint(80, 92)
-                    player.slice = random.randint(82, 94)
-                    player.volley = random.randint(92, 99)
-        
+                    player.serve = random.randint(95, 99)      
+                    player.forehand = random.randint(78, 90)   
+                    player.backhand = random.randint(78, 90)  
+                    player.slice = random.randint(85, 96)      
+                    player.volley = random.randint(95, 99)    
+                    
                     player.clutch = random.randint(88, 96)
-                    player.endurance = random.randint(80, 92)
+                    player.endurance = random.randint(78, 90) 
+
                 case "Clay":
                     player.serve = random.randint(78, 90)
                     player.forehand = random.randint(92, 99)
@@ -126,14 +130,14 @@ def generate_random_player(age = None):
         case "High":  # Top 50 players (rating ~80-88)
             match (type):
                 case "Grass":
-                    player.serve = random.randint(82, 90)
-                    player.forehand = random.randint(72, 83)
-                    player.backhand = random.randint(72, 83)
-                    player.slice = random.randint(75, 86)
-                    player.volley = random.randint(82, 90)
-        
+                    player.serve = random.randint(85, 92)      
+                    player.forehand = random.randint(70, 81)   
+                    player.backhand = random.randint(70, 81)   
+                    player.slice = random.randint(78, 88)     
+                    player.volley = random.randint(85, 92)     
+                    
                     player.clutch = random.randint(78, 88)
-                    player.endurance = random.randint(72, 83)
+                    player.endurance = random.randint(70, 81)  
                 case "Clay":
                     player.serve = random.randint(70, 82)
                     player.forehand = random.randint(82, 90)
@@ -217,7 +221,7 @@ def generate_random_player(age = None):
     
     return player
 
-def simulate_tournament(tournament, participants):
+def simulate_tournament(tournament, participants, mc_matches=None, yr="20XX"):
     
     # Seed players based on points
     player_remaining = sorted(participants, key=lambda p: p.points)
@@ -245,10 +249,14 @@ def simulate_tournament(tournament, participants):
             player1 = player_remaining[i]
             player2 = player_remaining[len(player_remaining) - 1 - i]
             
-            winner, loser = simulate_match(tournament, player1, player2)
+            winner, loser, match_result = simulate_match(tournament, player1, player2, round=round)
+            
+            # Store MC match if applicable
+            if mc_matches is not None and (player1.main_character or player2.main_character):
+                mc_matches.append(match_result)
             
             next_round.append(winner)
-            loser.point_history[tournament.week] = points_per_round[round]
+            loser.point_history[tournament.week - 1] = points_per_round[round]
         
         player_remaining = next_round
         
@@ -258,18 +266,24 @@ def simulate_tournament(tournament, participants):
     player1 = player_remaining[0]
     player2 = player_remaining[1]
         
-    champ, runner_up = simulate_match(tournament, player1, player2, final=True)
+    champ, runner_up, match_result = simulate_match(tournament, player1, player2, final=True)
+    
+    # Store MC match if applicable
+    if mc_matches is not None and (player1.main_character or player2.main_character):
+        mc_matches.append(match_result)
     
     # Trophies
-    champ.trophies.append(f"{year} {tournament.name} Champion")
-    runner_up.trophies.append(f"{year} {tournament.name} Finalist")
+    champ.trophies.append(f"{yr} {tournament.name} Champion")
+    runner_up.trophies.append(f"{yr} {tournament.name} Finalist")
     
     # Points    
-    champ.point_history[tournament.week] = points_per_round[round + 1]
-    runner_up.point_history[tournament.week] = points_per_round[round]
+    champ.point_history[tournament.week - 1] = points_per_round[round + 1]
+    runner_up.point_history[tournament.week - 1] = points_per_round[round]
+    
+    return champ
 
 
-def simulate_match(tournament, p1, p2, final=False):
+def simulate_match(tournament, p1, p2, round=None, final=False):
     if tournament.slam: 
         best_of = 5
     else: 
@@ -410,7 +424,7 @@ def simulate_match(tournament, p1, p2, final=False):
             
             # Calculate final probability
             final_prob = base_prob + adjustments
-            final_prob = max(30, min(95, final_prob))
+            final_prob = max(20, min(95, final_prob))
             
             # Simulate game
             if random.randint(1, 100) <= final_prob:
@@ -455,22 +469,8 @@ def simulate_match(tournament, p1, p2, final=False):
         winner = p2
         loser = p1
     
-    # Display results if MC involved or final
-    if p1.main_character == True or p2.main_character == True or final == True:
-        if winner == p1:
-            print(f"{tournament.name} Final: {p1.rank} {p1.name} d. {p2.rank} {p2.name}")
-            print(*p1_scores, sep=" | ")
-            print(*p2_scores, sep=" | ")
-        else:
-            print(f"{tournament.name}: {p2.rank} {p2.name} d. {p1.rank} {p1.name}")
-            print(*p2_scores, sep=" | ")
-            print(*p1_scores, sep=" | ")
-        print("="*30)
-    
     # Energy deduction for MC
     if p1.main_character == True or p2.main_character == True:
-        input("Press Enter to continue...")
-        
         total_sets = p1_sets_won + p2_sets_won
         energy_deduction = total_sets * ENERGY_PER_SET
 
@@ -479,7 +479,19 @@ def simulate_match(tournament, p1, p2, final=False):
         if p2.main_character == True: 
             p2.energy -= energy_deduction
     
-    return winner, loser
+    # Create match result dict
+    match_result = {
+        'round': round,
+        'final': final,
+        'p1': p1,
+        'p2': p2,
+        'winner': winner,
+        'loser': loser,
+        'p1_scores': p1_scores,
+        'p2_scores': p2_scores
+    }
+    
+    return winner, loser, match_result
 
 
 def update_rankings(players):
@@ -494,21 +506,13 @@ def update_rankings(players):
     # Assign ranks
     for i, p in enumerate(sorted_players, start=1):
         p.rank = i
+        if i < p.career_high_rank:
+            p.career_high_rank = i
+        p.rank_history.append(i)
     
     return sorted_players
 
-def print_rankings(players, num_players=15):
-    
-    players = update_rankings(players)
-    
-    # Top 15
-    players = players[0:num_players]
-    
-    n=1
-    for p in players:
-        print(f"{n}. {p.name} ({p.country}) -- {p.points}, {p.rating} rating") 
-        n += 1
-        
+
 def get_tournaments_for_week(week, all_tournaments):
     
     week_tournaments = [t for t in all_tournaments if t.week == week]
@@ -517,21 +521,22 @@ def get_tournaments_for_week(week, all_tournaments):
     return week_tournaments
 
 
-def sim_week_tournaments(week_tournaments, players, mc_tournament=None, main_character=None):
+def sim_week_tournaments(week_tournaments, players, mc_tournament_selection=None, main_character=None, year="20XX"):
     
     current_players = update_rankings(players)
-    
-    # Remove MC from pool and add to their tournament
-    if mc_tournament:
+
+    # Find and remove MC from pool
+    if main_character is not None:
         current_players.remove(main_character)
-        mc_tournament_index = week_tournaments.index(mc_tournament)
     
     # Aligns with week_tournaments
     week_tournaments_participants = [[] for _ in week_tournaments]
     
     # Add MC to their chosen tournament
-    if mc_tournament:
-        week_tournaments_participants[mc_tournament_index].append(main_character)
+    mc_matches = [] if main_character is not None else None
+    
+    if mc_tournament_selection is not None:
+        week_tournaments_participants[mc_tournament_selection].append(main_character)
     
     # Slam or Masters (1000+ points)
     if week_tournaments[0].pts >= 1000:
@@ -565,47 +570,20 @@ def sim_week_tournaments(week_tournaments, players, mc_tournament=None, main_cha
                     week_tournaments_participants[tournament_index].append(p)
                         
     # Simulate Tournaments
+    tournament_results = []
     for i in range(len(week_tournaments)):
-        simulate_tournament(week_tournaments[i], week_tournaments_participants[i])
+        if mc_tournament_selection == i and main_character is not None:
+            champion = simulate_tournament(week_tournaments[i], week_tournaments_participants[i], mc_matches, yr=year)
+        else:
+            champion = simulate_tournament(week_tournaments[i], week_tournaments_participants[i], yr=year)
         
-def year_end_results(players):
-    players = update_rankings(players)
+        tournament_results.append({
+            'tournament': week_tournaments[i],
+            'champion': champion
+        })
     
-    for p in players:
-        if p.main_character == True:
-            
-            print(f"Your final rank was {p.rank} with {p.points} points\n")
-            continue
-    
-    # Year-end #1
-    print(f"{players[0].name} finished the year as World No. 1\n")
-    players[0].trophies.append(f"{year} Year-End World No. 1")
-    
-    print_rankings(players, 10)
-    
-    # Slam & Finals Winners
-    for p in players:
-        if p.point_history[AO_WEEK] >= 2000:
-            print(f"{p.name} won the Australian Open")
-            break
-    for p in players:
-        if p.point_history[FO_WEEK] >= 2000:
-            print(f"{p.name} won the French Open")
-            break
-    for p in players:
-        if p.point_history[WIM_WEEK] >= 2000:
-            print(f"{p.name} won Wimbledon")
-            break
-    for p in players:
-        if p.point_history[USO_WEEK] >= 2000:
-            print(f"{p.name} won the US Open")
-            break
-    for p in players:
-        if p.point_history[FINALS_WEEK] >= 1500:
-            print(f"\n{p.name} won the ATP Finals")
-            break
-    
-    print("="*30)
+    return tournament_results, mc_matches
+
 
 def year_end_changes(players):    
 
@@ -683,188 +661,3 @@ def year_end_changes(players):
         players.append(new_player)
         
     return players
-
-
-# New Game ----------------------------------
-
-# Generate random players
-players = []
-
-for i in range(250):
-    cpu = generate_random_player()
-    players.append(cpu)
-
-# Load tournaments from JSON
-with open('tournaments.json', 'r') as f:
-    tournament_data = json.load(f)
-
-all_tournaments = []
-for t in tournament_data:
-    tourney = Tournament(t['name'], t['pts'], t['participants'], 
-                         t['slam'], t['surface'], t['week'], t['country'])
-    all_tournaments.append(tourney)
-
-# Sim Past Years
-for year in range(2020, 2026):
-    for week in range(1, 53):
-        week_tournaments = get_tournaments_for_week(week, all_tournaments)
-        
-        if len(week_tournaments) > 0:
-            sim_week_tournaments(week_tournaments, players)
-            
-        players = update_rankings(players)
-    
-    # Summary
-    print(f"{year} Season Summary")
-    year_end_results(players)
-    
-    # Year end adjustments
-    players = year_end_changes(players)
-    
-
-
-# Create Main Player
-name = ""
-country = ""
-type = ""
-type_select = 0
-name = input("Name (first and last): ")
-country = input("Country (3-letter abbreviation, ex. USA): ")
-
-while (type_select <= 0 or type_select > 3):
-
-    print(f"1. Grass -  Serve, volley, slice focused")
-    print(f"2. Clay  -  Strong groundstrokes and endurance")
-    print(f"3. Hard  -  Balanced all-around, strong mentality")
-    
-    
-    print("="*30)
-    type_select = int(input("Select a type (1-3): "))
-
-match (type_select):
-    case 1:
-        type = "Grass"
-    case 2:
-        type = "Clay"
-    case 3:
-        type = "Hard"
-
-mc = Player(name, country, type)
-
-mc.main_character = True
-
-print("New Career Created!")
-mc.print_stats()
-
-# Tutorial
-
-
-# Main
-# year loop
-week = 1
-year = 2026
-loop = True
-while (loop):
-    while (week < 53):
-        
-        players = update_rankings(players)
-        
-        week_tournaments = get_tournaments_for_week(week, all_tournaments)
-        
-        if len(week_tournaments) == 0:
-            week += 1
-            continue
-        
-        print(f"WEEK {week} of the {year} season")
-        
-        print_rankings(players)
-        
-        # print(f"Current Rank: {mc.rank}")
-        print(f"Current Energy: {mc.energy}")
-        
-        print("Tournaments")
-        print("="*30)
-        n = 1
-        for t in week_tournaments:
-            print(f"{n}. {t.name} - {t.pts} ({t.surface})")
-            n += 1
-        
-        selection = 0
-        while (selection != 1 and selection != 2):
-            selection = int(input("(1) Play or (2) Train/Rest?: "))
-        
-        # Play
-        if selection == 1:
-            selection = 0
-            while (selection <= 0 or selection > len(week_tournaments)):
-                selection = int(input("Select Tournament: "))
-            
-                selected_tournament = week_tournaments[selection - 1]
-                
-                # Energy Check
-                required_energy = int(math.log2(selected_tournament.participants)) * ENERGY_PER_SET * 3  # Estimate for 3-set matches
-                if mc.energy < required_energy:
-                    print("Not enough energy")
-                    selection = 0
-                    
-                # Eligibility Check
-                if selected_tournament.pts >= 1000:  # Slam or Masters
-                    if mc.rank > selected_tournament.participants:
-                        print("Not eligible for this tournament")
-                        selection = 0
-                
-                    
-            # Enter Tournament
-
-
-        # Train/Rest        
-        elif selection == 2:
-            # Options
-            n = 1
-            for opt in TRAIN_OPTIONS:
-                print(f"{n}. {opt}")
-                n += 1
-            
-
-            selection = 0
-            while (selection <= 0 or selection > len(TRAIN_OPTIONS)):
-                selection = int(input(f"Select an option: "))
-            
-            selected_option = TRAIN_OPTIONS[selection - 1]
-            
-            match (selected_option):
-                case "REST":
-                    mc.energy += 20
-                case "SERVE":
-                    mc.serve += 1
-                case "FOREHAND":
-                    mc.forehand += 1
-                case "BACKHAND":
-                    mc.backhand += 1
-                case "SLICE":
-                    mc.slice += 1
-                case "VOLLEY":
-                    mc.volley += 1
-                case "CLUTCH":
-                    mc.clutch += 1
-                case "ENDURANCE":
-                    mc.endurance += 1
-                
-        # Sim Tournaments
-        sim_week_tournaments(week_tournaments, players, mc_tournament=selected_tournament, main_character=mc)
-        
-        week += 1
-
-
-    # End of Season
-    # Summary
-    print(f"{year} Season Summary")
-    year_end_results(players)
-    
-    # Year end adjustments (retirements, rating changes, new players)
-    players = year_end_changes(players)
-    
-    # Happy New Year
-    week = 1
-    year += 1
-

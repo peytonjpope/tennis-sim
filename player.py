@@ -15,6 +15,12 @@ class Player:
                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         
+        self.rank_history = [250, 250]
+        
+        self.rank = 250
+        
+        self.career_high_rank = 250
+        
         self.serve = 0
         self.backhand = 0
         self.forehand = 0
@@ -57,13 +63,11 @@ class Player:
         
     def print_stats(self):
         print("PLAYER INFO")
-        print(self.name)
-        print(self.country)
+        print(f"{self.name}, {self.country}")
         print(f"{self.age} years old")
-        print(f"Type: {self.type}")
-        print(f"Points: {self.points}")
-        print("="*30)
-        
+        print(f"Player Type: {self.type}")
+        print(f"ATP Points: {self.points}")
+        print("")
         print("RATINGS")
         print(f"Overall: {self.rating}")
         print(f"Serve: {self.serve}")
@@ -71,9 +75,7 @@ class Player:
         print(f"Backhand: {self.backhand}")
         print(f"Slice: {self.slice}")
         print(f"Volley: {self.volley}")
-        print("="*30)
-        
-        print("INTANGIBLE RATINGS")
+        print("")
         print(f"Clutch: {self.clutch}")
         print(f"Endurance: {self.endurance}")
         print("="*30)
