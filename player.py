@@ -10,12 +10,10 @@ class Player:
         self.age = 18
         self.type = type
         
-        self.point_history = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # 52 zeroes
+        self.point_history = [0] * 52
         
-        self.rank_history = [250, 250]
+        self.rank_history = [250] * 52
         
         self.rank = 250
         
@@ -81,4 +79,4 @@ class Player:
         print("="*30)
 
     def update_points(self):
-        self.points = sum(self.point_history)
+        self.points = sum(self.point_history[-52:])  # Sum of last 52 weeks

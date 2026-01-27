@@ -13,7 +13,15 @@ COUNTRIES = ["USA", "ESP", "SRB", "FRA", "AUS",
              "AUT", "NED", "BRA", "NOR", "GRE",
              "POL", "CZE", "DEN", "CHN", "MEX"]
 
-ENERGY_PER_SET = 2
+IOC_TO_ISO2 = {
+    "USA": "US", "ESP": "ES", "SRB": "RS", "FRA": "FR", "AUS": "AU",
+    "ITA": "IT", "GER": "DE", "GBR": "GB", "RUS": "RU", "ARG": "AR",
+    "SUI": "CH", "JPN": "JP", "CAN": "CA", "CRO": "HR", "SWE": "SE",
+    "AUT": "AT", "NED": "NL", "BRA": "BR", "NOR": "NO", "GRE": "GR",
+    "POL": "PL", "CZE": "CZ", "DEN": "DK", "CHN": "CN", "MEX": "MX"
+}
+
+ENERGY_PER_SET = 1
 
 TYPES = ['Grass', 'Clay', 'Hard']
 
@@ -256,7 +264,7 @@ def simulate_tournament(tournament, participants, mc_matches=None, yr="20XX"):
                 mc_matches.append(match_result)
             
             next_round.append(winner)
-            loser.point_history[tournament.week - 1] = points_per_round[round]
+            loser.point_history.append(points_per_round[round])
         
         player_remaining = next_round
         
@@ -277,8 +285,8 @@ def simulate_tournament(tournament, participants, mc_matches=None, yr="20XX"):
     runner_up.trophies.append(f"{yr} {tournament.name} Finalist")
     
     # Points    
-    champ.point_history[tournament.week - 1] = points_per_round[round + 1]
-    runner_up.point_history[tournament.week - 1] = points_per_round[round]
+    champ.point_history.append(points_per_round[round + 1])
+    runner_up.point_history.append(points_per_round[round])
     
     return champ
 
@@ -522,12 +530,12 @@ def get_tournaments_for_week(week, all_tournaments):
 
 
 def sim_week_tournaments(week_tournaments, players, mc_tournament_selection=None, main_character=None, year="20XX"):
-    
-    current_players = update_rankings(players)
+
+    current_pool = players
 
     # Find and remove MC from pool
     if main_character is not None:
-        current_players.remove(main_character)
+        current_pool.remove(main_character)
     
     # Aligns with week_tournaments
     week_tournaments_participants = [[] for _ in week_tournaments]
@@ -540,13 +548,15 @@ def sim_week_tournaments(week_tournaments, players, mc_tournament_selection=None
     
     # Slam or Masters (1000+ points)
     if week_tournaments[0].pts >= 1000:
-        # Top players fill the big tournament
-        for p in current_players[0:week_tournaments[0].participants]:
-            week_tournaments_participants[0].append(p)
+        i = 0
+        # Top players fill the big tournaments
+        while (len(week_tournaments_participants[0]) <= week_tournaments[0].participants):
+            week_tournaments_participants[0].append(current_pool[i])
+            i+=1
     
     # ATP 500 or 250
     else: 
-        for p in current_players:
+        for p in players:
             # Probability to enter based on rank (LESS likely as rank improves)      
             if p.rank <= 20:
                 probability = 35
@@ -568,6 +578,16 @@ def sim_week_tournaments(week_tournaments, players, mc_tournament_selection=None
                 if available_tournaments:
                     tournament_index = random.choice(available_tournaments)
                     week_tournaments_participants[tournament_index].append(p)
+    
+    # Not in any tournament this week
+    for p in players:
+        in_tournament = False
+        for participants in week_tournaments_participants:
+            if p in participants:
+                in_tournament = True
+                break
+        if not in_tournament:
+            p.point_history.append(0)
                         
     # Simulate Tournaments
     tournament_results = []
@@ -585,13 +605,16 @@ def sim_week_tournaments(week_tournaments, players, mc_tournament_selection=None
     return tournament_results, mc_matches
 
 
-def year_end_changes(players):    
-
-    players = update_rankings(players)
+def year_end_changes(players, year="20xx"):    
 
     retired_players = 0
     
-    for p in players:            
+    for p in players:       
+        
+        # World No. 1
+        if p.rank == 1:
+            p.trophies.append(f"{year} Year-End World No. 1")
+             
         change_in_overall = 0
         retirement_chance = 0
         
@@ -601,8 +624,8 @@ def year_end_changes(players):
             retirement_chance += (p.age - 29) * 10
         
         # Rank factor
-        if p.rank > 225:
-            retirement_chance += (p.rank - 224) 
+        if p.rank > 200:
+            retirement_chance += (p.rank - 199) 
         
         if retirement_chance > random.randint(1, 100):
             # Retire Player
@@ -617,7 +640,7 @@ def year_end_changes(players):
             change_in_overall += random.randint(-7, -2)
             p.endurance += random.randint(-5, 0)
         elif p.age >= 30:
-            change_in_overall += random.randint(-2, 0)
+            change_in_overall += random.randint(-4, 0)
             p.endurance += random.randint(-3, 0)
         elif p.age >= 26:
             change_in_overall += random.randint(-3, 2)
@@ -661,3 +684,10 @@ def year_end_changes(players):
         players.append(new_player)
         
     return players
+
+def country_to_flag(ioc_code):
+    if ioc_code not in IOC_TO_ISO2:
+        return ""
+    iso2 = IOC_TO_ISO2[ioc_code]
+    OFFSET = 127397
+    return ''.join(chr(ord(c) + OFFSET) for c in iso2)
