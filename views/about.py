@@ -9,10 +9,9 @@ def render():
     st.markdown(
     """
                 
-    - Hundreds of players are randomly generated, several seasons of tennis are simulated
-    - Each week, you can view upcoming tournaments and choose to enter your player in one
-    - Or, you can choose to train your player that week to improve their skills
-    - Every tournament is simulated match-by-match, tracking 
+    - Each week, consider entering a tournment to gain ranking points.
+    - OR choose to train to increase player attributes
+    - Reach World No. 1 and win Grand Slam titles!
     
     """
     )
