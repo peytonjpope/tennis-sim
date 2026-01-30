@@ -1,4 +1,4 @@
-# Tennis Career Simulator
+# 🎾 Tennis Career Simulation Game
 
 ## v0.1.0
 

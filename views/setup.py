@@ -11,7 +11,9 @@ def render():
     if st.session_state.mc is not None:
         st.switch_page("app.py")
 
-    st.title("Create Your Player")
+    st.title("Welcome to TenniSim!")
+    
+    st.subheader("Create your player to get started.")
 
     with st.form("create_player"):
         type_options = ["**Grass** - Serve, Volley, and Slice", 
